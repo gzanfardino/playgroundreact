@@ -4,63 +4,23 @@ import { StyleSheet, FlatList, Text, View , Image, Button, TextInput } from 'rea
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { render } from 'react-dom';
-
-const data = {
-  content: {
-    body: [
-      {
-      "id": 2,
-      "title": "McDonald's",
-      "img": "https://...",
-      "created_at": "2019-09-16 00:00:00"
-      },
-      {
-      "id": 1,
-      "title": "Burger King",
-      "img": "https://...",
-      "created_at": "2019-09-16 00:00:00"
-      },
-      ]
-      
-  }
-};
-
-const initialState = {
-  isLoggedIn: false,
-  userId: '',
-  token: '',
-  expiresOn: '',
-  data: '',
-};
+import axios from "axios";
 
 
 function LoginScreen({ navigation }, props) {
   const [email, setEMail] = useState('email');
   const [password, setPassword] = useState('password');
-
-  const handlePress = () => {
-    var ooo = {
-      email,
-      password
-    }
-    console.log("{"+JSON.stringify(ooo)+"}" );
-    fetch('https://playground.alfonsiasno.delivery/api/auth/login', {
-      method: 'POST',
-      headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'multipart/form-data',
-      },
-      body: JSON.stringify(ooo) 
-      })
-      .then((response) => response.json())
-      .then((responseJson) => {
-          console.log('response object:',responseJson)
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    navigation.navigate("Partners");
+  var fields = {
+    email,
+    password
   }
+  const handlePress = () => {
+    axios.post('https://playground.alfonsino.delivery/api/auth/login', fields)
+    .then(res => { 
+      console.log(res.data.access_token)
+    })
+    navigation.navigate("Partners");
+  };
 
   
 
@@ -95,15 +55,14 @@ class PartnersScreen extends Component {
       isLoading: true,
       dataSource: []
     }
-  };
-
+  }; 
   componentDidMount() {
-    fetch('https://playground.alfonsino.delivery/api/partners?skip=0&per_page=8')
-      .then( response => response.json() )
-      .then( responseJson => {
+
+    axios.get('https://playground.alfonsino.delivery/api/partners?skip=0&per_page=19')
+      .then( response => {
         this.setState({
           isLoading: false,
-          dataSource: responseJson
+          dataSource: response.data
         })
       })
       .catch(error => console.log(error));
@@ -150,30 +109,15 @@ class PartnersScreen extends Component {
 
 function CreaPartnerScreen({ navigation }) {
   const [title, setTitle] = useState('partnerTitle');
-
   
   const handlePress = () => {
-    var test = {
-      title
-    }
-    console.log(JSON.stringify(test));
-    fetch('https://playground.alfonsino.delivery/api/partners', {
-      method: 'POST',
-      headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'multipart/form-data',
-      },
-      body: JSON.stringify(test) 
-      })
-      .then((response) => response.json())
-      .then((responseJson) => {
-          console.log('response object:',responseJson)
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    axios.post('https://playground.alfonsino.delivery/api/partners', {title})
+    .then(res => { 
+      console.log(res);
+      console.log(res.data);
+    })
     navigation.navigate("Partners");
-  }
+  };
 
   return (
     <View style={loginStyles.container}>
