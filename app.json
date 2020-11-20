@@ -1,0 +1,12 @@
+{
+  "name": "playgroundreact",
+  "displayName": "playgroundreact",
+  "expo": {
+    "name": "playgroundreact",
+    "slug": "playgroundreact",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
